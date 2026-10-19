@@ -1,0 +1,1870 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Antique&family=Shippori+Mincho:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<title>九星早見盤</title>
+<style>
+  :root {
+    --bg: #EEF0E6;
+    --surface: #F8F9F2;
+    --surface-2: #E8EADD;
+    --ink: #20242B;
+    --ink-soft: #5B6259;
+    --line: rgba(32, 36, 43, 0.14);
+    --accent: #2B3A55;
+    --accent-ink: #F7F8F2;
+    --seal: #AF3327;
+    --ring: rgba(43, 58, 85, 0.35);
+    --font-display: "Zen Antique", "Shippori Mincho", serif;
+    --font-body: "Shippori Mincho", serif;
+    --font-ui: "Zen Kaku Gothic New", sans-serif;
+
+    /* star identity colors — tuned for legibility as text on --surface */
+    --star-1: #2C5F7C;
+    --star-2: #4A3B2A;
+    --star-3: #1F6F5C;
+    --star-4: #3D6532;
+    --star-5: #96700F;
+    --star-6: #7A6A3D;
+    --star-7: #B23A2E;
+    --star-8: #6E5638;
+    --star-9: #6B3F6E;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14181C;
+      --surface: #1B2025;
+      --surface-2: #232922;
+      --ink: #ECE7DA;
+      --ink-soft: #A6AC9F;
+      --line: rgba(236, 231, 218, 0.16);
+      --accent: #9AACD1;
+      --accent-ink: #14181C;
+      --seal: #E27F71;
+      --ring: rgba(154, 172, 209, 0.4);
+
+      --star-1: #7FB2D6;
+      --star-2: #C9A987;
+      --star-3: #6FCBB0;
+      --star-4: #8FCB7A;
+      --star-5: #E4B94A;
+      --star-6: #D3C08A;
+      --star-7: #E2857A;
+      --star-8: #C9A97A;
+      --star-9: #C79BC9;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #14181C;
+    --surface: #1B2025;
+    --surface-2: #232922;
+    --ink: #ECE7DA;
+    --ink-soft: #A6AC9F;
+    --line: rgba(236, 231, 218, 0.16);
+    --accent: #9AACD1;
+    --accent-ink: #14181C;
+    --seal: #E27F71;
+    --ring: rgba(154, 172, 209, 0.4);
+
+    --star-1: #7FB2D6;
+    --star-2: #C9A987;
+    --star-3: #6FCBB0;
+    --star-4: #8FCB7A;
+    --star-5: #E4B94A;
+    --star-6: #D3C08A;
+    --star-7: #E2857A;
+    --star-8: #C9A97A;
+    --star-9: #C79BC9;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    line-height: 1.75;
+    display: flex;
+    justify-content: center;
+    padding: clamp(28px, 6vw, 72px) 20px 60px;
+  }
+
+  .sheet {
+    width: 100%;
+    max-width: 640px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .eyebrow {
+    font-family: var(--font-ui);
+    font-size: 12px;
+    letter-spacing: 0.28em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(30px, 6vw, 42px);
+    font-weight: 400;
+    margin: 0;
+    letter-spacing: 0.06em;
+    text-wrap: balance;
+  }
+
+  .lede {
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin: 0 auto;
+    max-width: 34em;
+    text-wrap: balance;
+  }
+
+  form {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 24px clamp(18px, 4vw, 32px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 16px 20px;
+    position: relative;
+  }
+
+  form::before {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1 1 220px;
+  }
+
+  label {
+    font-family: var(--font-ui);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: var(--ink-soft);
+  }
+
+  input[type="date"],
+  input[type="text"],
+  select {
+    font-family: var(--font-ui);
+    font-size: 16px;
+    color: var(--ink);
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 11px 12px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  input[type="date"]:focus-visible,
+  input[type="text"]:focus-visible,
+  select:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  button {
+    font-family: var(--font-ui);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    border-radius: 3px;
+    padding: 12px 28px;
+    cursor: pointer;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+
+  button:hover { opacity: 0.88; }
+  button:active { transform: translateY(1px); }
+
+  @media (prefers-reduced-motion: reduce) {
+    button { transition: none; }
+  }
+
+  .error {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    color: var(--seal);
+    width: 100%;
+    display: none;
+  }
+  .error.show { display: block; }
+
+  .results {
+    display: none;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .results.show {
+    display: flex;
+    animation: rise 0.5s ease both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .results.show { animation: none; }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .card .kind {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+  }
+
+  .card .name-row,
+  .journey-card .name-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .card .name,
+  .journey-card .name {
+    font-family: var(--font-display);
+    font-size: 22px;
+    letter-spacing: 0.04em;
+  }
+
+  .badge {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 500;
+    color: #fff;
+    padding: 3px 9px;
+    border-radius: 999px;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+
+  .card .trait {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  .card .palace {
+    font-family: var(--font-ui);
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.06em;
+  }
+
+  .journey-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .journey-card .kind {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+  }
+
+  .journey-text {
+    font-size: 14.5px;
+    line-height: 1.9;
+    margin: 0;
+  }
+
+  .advice-text {
+    font-size: 14px;
+    line-height: 1.8;
+    margin: 0;
+    padding-left: 14px;
+    border-left: 3px solid var(--accent);
+    color: var(--ink);
+  }
+
+  .fusagari-text {
+    font-family: var(--font-ui);
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    margin: 0;
+    padding-top: 4px;
+    border-top: 1px solid var(--line);
+  }
+  .fusagari-text .strong,
+  .journey-text .strong { color: var(--seal); font-weight: 700; }
+
+  .tendency-list {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 12px;
+    row-gap: 6px;
+    margin: 0;
+    padding: 12px 14px;
+    background: var(--surface-2);
+    border-radius: 3px;
+  }
+  .tendency-list dt {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    padding-top: 1px;
+  }
+  .tendency-list dd {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  .travel-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .travel-table th,
+  .travel-table td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  .travel-table th {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  .travel-table td:first-child {
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-soft);
+    width: 1%;
+  }
+  .travel-table tr:last-child td { border-bottom: none; }
+
+  .small-note {
+    font-family: var(--font-ui);
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  .move-year-field {
+    max-width: 220px;
+  }
+  .move-year-field select { width: 100%; }
+
+  .dest-check-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 12px;
+  }
+  .dest-check-row .field {
+    flex: 1 1 200px;
+    max-width: 260px;
+  }
+  .dest-check-row button {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    border-radius: 3px;
+    padding: 11px 20px;
+    cursor: pointer;
+  }
+  .dest-check-row button:hover { opacity: 0.88; }
+  .dest-check-row button:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  .compass-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mini-compass {
+    width: min(100%, 220px);
+    aspect-ratio: 1;
+  }
+  .mini-compass .mini-wedge {
+    fill: var(--surface-2);
+    stroke: var(--surface);
+    stroke-width: 2;
+  }
+  .mini-compass .mini-wedge.good { fill: #A6362B; }
+  .mini-compass .mini-hub {
+    fill: var(--surface);
+    stroke: var(--surface-2);
+    stroke-width: 2;
+  }
+  .mini-compass .mini-label {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 700;
+    text-anchor: middle;
+    fill: var(--ink-soft);
+  }
+  .mini-compass .mini-label.on-fill { fill: #fff; }
+
+  .compass-legend {
+    display: flex;
+    gap: 16px;
+    font-family: var(--font-ui);
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .compass-legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+  .compat-fieldset {
+    flex: 1 1 100%;
+    border: 1px dashed var(--line);
+    border-radius: 3px;
+    padding: 14px clamp(12px, 3vw, 18px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 16px 20px;
+  }
+
+  .compat-fieldset .fieldset-title {
+    flex: 1 1 100%;
+    font-family: var(--font-ui);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+  }
+
+  .compat-line {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .compat-line .rel { color: var(--ink); font-weight: 700; }
+  .compat-mechanism {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    margin: 0 0 4px;
+    padding-left: 2px;
+  }
+
+  .current-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 24px clamp(18px, 4vw, 32px);
+  }
+
+  .section-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+  }
+
+  .section-heading h2 {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin: 0;
+  }
+
+  .board-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    padding: 7px 18px;
+    border: 1px solid var(--line);
+    background: var(--surface-2);
+    color: var(--ink-soft);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .tab-btn.active {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+  }
+
+  .board-caption {
+    text-align: center;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .octa-board {
+    display: block;
+    width: min(100%, 340px);
+    margin: 0 auto;
+    aspect-ratio: 1;
+  }
+
+  .octa-board .wedge {
+    fill: var(--surface);
+    stroke: var(--bg);
+    stroke-width: 2;
+  }
+  .octa-board .wedge.good { fill: #A6362B; }
+  .octa-board .wedge.caution { fill: #6B7078; }
+
+  .octa-board .hub {
+    fill: var(--surface-2);
+    stroke: var(--bg);
+    stroke-width: 2;
+  }
+
+  .octa-board .star-label {
+    font-family: var(--font-display);
+    font-size: 17px;
+    text-anchor: middle;
+  }
+  .octa-board .wedge-text .star-label { fill: var(--ink); }
+  .octa-board .wedge-text.on-fill .star-label { fill: #fff; }
+  .octa-board .star-label.s1 { fill: var(--star-1); }
+  .octa-board .star-label.s2 { fill: var(--star-2); }
+  .octa-board .star-label.s3 { fill: var(--star-3); }
+  .octa-board .star-label.s4 { fill: var(--star-4); }
+  .octa-board .star-label.s5 { fill: var(--star-5); }
+  .octa-board .star-label.s6 { fill: var(--star-6); }
+  .octa-board .star-label.s7 { fill: var(--star-7); }
+  .octa-board .star-label.s8 { fill: var(--star-8); }
+  .octa-board .star-label.s9 { fill: var(--star-9); }
+
+  .octa-board .palace-label {
+    font-family: var(--font-ui);
+    font-size: 9.5px;
+    letter-spacing: 0.06em;
+    text-anchor: middle;
+    fill: var(--ink-soft);
+  }
+  .octa-board .wedge-text.on-fill .palace-label { fill: rgba(255, 255, 255, 0.85); }
+
+  .octa-board .dir-label {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-anchor: middle;
+    fill: var(--ink-soft);
+  }
+  .octa-board .wedge-text.on-fill .dir-label { fill: #fff; }
+
+  .octa-legend {
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    font-family: var(--font-ui);
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .octa-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .swatch { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+  .swatch.good { background: #A6362B; }
+  .swatch.caution { background: #6B7078; }
+
+  .notes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+  }
+
+  .note-block {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .note-title {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+  }
+
+  .note-body {
+    font-size: 13.5px;
+    line-height: 1.9;
+    margin: 0;
+  }
+
+  .note-body .tag {
+    display: inline-block;
+    font-family: var(--font-ui);
+    font-size: 11px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    margin: 2px 4px 2px 0;
+  }
+  .note-body .tag.good { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); }
+  .note-body .tag.caution { background: color-mix(in srgb, var(--seal) 16%, transparent); color: var(--seal); }
+
+  footer {
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  footer p {
+    font-family: var(--font-ui);
+    font-size: 11.5px;
+    line-height: 1.8;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+</style>
+
+<div class="sheet">
+  <header>
+    <span class="eyebrow">Kyusei Kigaku &mdash; Hayamiban</span>
+    <h1>九星早見盤</h1>
+    <p class="lede">生年月日を入力すると、本命星と月命星を洛書の方位盤の上に照らして示します。</p>
+  </header>
+
+  <form id="form">
+    <div class="field">
+      <label for="bdate">生年月日</label>
+      <input type="date" id="bdate" name="bdate" min="1900-01-01" max="2035-12-31" required>
+    </div>
+    <div class="field">
+      <label for="pref">現住所（都道府県）</label>
+      <select id="pref" name="pref">
+        <option value="">選択してください</option>
+        <option>北海道</option><option>青森県</option><option>岩手県</option><option>宮城県</option><option>秋田県</option><option>山形県</option><option>福島県</option>
+        <option>茨城県</option><option>栃木県</option><option>群馬県</option><option>埼玉県</option><option>千葉県</option><option>東京都</option><option>神奈川県</option>
+        <option>新潟県</option><option>富山県</option><option>石川県</option><option>福井県</option><option>山梨県</option><option>長野県</option>
+        <option>岐阜県</option><option>静岡県</option><option>愛知県</option><option>三重県</option>
+        <option>滋賀県</option><option>京都府</option><option>大阪府</option><option>兵庫県</option><option>奈良県</option><option>和歌山県</option>
+        <option>鳥取県</option><option>島根県</option><option>岡山県</option><option>広島県</option><option>山口県</option>
+        <option>徳島県</option><option>香川県</option><option>愛媛県</option><option>高知県</option>
+        <option>福岡県</option><option>佐賀県</option><option>長崎県</option><option>熊本県</option><option>大分県</option><option>宮崎県</option><option>鹿児島県</option><option>沖縄県</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="city">現住所（市区町村）</label>
+      <input type="text" id="city" name="city" placeholder="例：横浜市中区">
+    </div>
+
+    <div class="compat-fieldset">
+      <span class="fieldset-title">相性診断（任意・診断したいお相手がいれば入力）</span>
+      <div class="field">
+        <label for="partnerBdate">お相手の生年月日</label>
+        <input type="date" id="partnerBdate" name="partnerBdate" min="1900-01-01" max="2035-12-31">
+      </div>
+    </div>
+
+    <button type="submit">調べる</button>
+    <p class="error" id="error">生年月日を入力してください。</p>
+  </form>
+
+  <section class="current-section">
+    <div class="section-heading">
+      <h2>今の方位盤</h2>
+      <p class="lede">今年・今月・今日、実際に九星がどう巡っているかを確認できます。</p>
+    </div>
+
+    <div class="board-tabs" id="boardTabs">
+      <button type="button" class="tab-btn active" data-board="year">年盤</button>
+      <button type="button" class="tab-btn" data-board="month">月盤</button>
+      <button type="button" class="tab-btn" data-board="day">日盤</button>
+    </div>
+
+    <p class="board-caption" id="boardCaption">&mdash;</p>
+    <svg class="octa-board" id="currentBoard" viewBox="0 0 360 360" role="img" aria-label="今の方位盤"></svg>
+    <div class="octa-legend">
+      <span><i class="swatch good"></i>吉方位</span>
+      <span><i class="swatch caution"></i>凶方位</span>
+    </div>
+
+    <div class="notes-grid">
+      <div class="note-block">
+        <span class="note-title">吉方位</span>
+        <p class="note-body" id="kippouText">生年月日を入力すると、あなたの本命星から見た吉方位をここに表示します。</p>
+      </div>
+      <div class="note-block">
+        <span class="note-title">注意すべき方位</span>
+        <p class="note-body" id="kyouhouText">&mdash;</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="results" id="results">
+    <div class="cards">
+      <div class="card" id="honmeiCard">
+        <span class="kind">本命星 &mdash; 生年</span>
+        <div class="name-row">
+          <span class="name" id="honmeiName">&mdash;</span>
+          <span class="badge" id="honmeiBadge">&mdash;</span>
+        </div>
+        <span class="palace" id="honmeiPalace">&mdash;</span>
+        <p class="trait" id="honmeiTrait">&mdash;</p>
+        <p class="detail-text" id="honmeiDetail">&mdash;</p>
+        <p class="caution-text" id="honmeiCaution">&mdash;</p>
+      </div>
+      <div class="card" id="getsumeiCard">
+        <span class="kind">月命星 &mdash; 生月</span>
+        <div class="name-row">
+          <span class="name" id="getsumeiName">&mdash;</span>
+          <span class="badge" id="getsumeiBadge">&mdash;</span>
+        </div>
+        <span class="palace" id="getsumeiPalace">&mdash;</span>
+        <p class="trait" id="getsumeiTrait">&mdash;</p>
+        <p class="detail-text" id="getsumeiDetail">&mdash;</p>
+        <p class="caution-text" id="getsumeiCaution">&mdash;</p>
+      </div>
+    </div>
+
+    <div class="journey-card" id="sameStarNote" style="display:none;">
+      <span class="kind">本命星と月命星が同じ星である理由</span>
+      <p class="journey-text" id="sameStarText">&mdash;</p>
+    </div>
+
+    <div class="journey-card">
+      <span class="kind">本命星から見る、歩みとこれから</span>
+      <p class="journey-text" id="journeyText">&mdash;</p>
+      <dl class="tendency-list" id="tendencyList"></dl>
+      <p class="advice-text" id="adviceText">&mdash;</p>
+      <p class="fusagari-text" id="fusagariText">&mdash;</p>
+    </div>
+
+    <div class="journey-card">
+      <span class="kind">短期旅行の目安（月盤ベース・向こう12ヶ月）</span>
+      <div class="table-wrap">
+        <table class="travel-table">
+          <thead><tr><th>月</th><th>おすすめの方位</th></tr></thead>
+          <tbody id="travelTableBody"></tbody>
+        </table>
+      </div>
+      <p class="journey-text small-note" id="travelTripNote">&mdash;</p>
+    </div>
+
+    <div class="journey-card">
+      <span class="kind">引っ越しの目安（年盤ベース）</span>
+      <div class="field move-year-field">
+        <label for="moveYearSelect">見る年を選択</label>
+        <select id="moveYearSelect"></select>
+      </div>
+      <div class="compass-row">
+        <svg class="mini-compass" id="moveCompass" viewBox="0 0 200 200" role="img" aria-label="引っ越しの方位"></svg>
+        <div class="compass-legend">
+          <span><i class="swatch good"></i>おすすめの方位</span>
+        </div>
+      </div>
+      <p class="journey-text" id="travelMoveText">&mdash;</p>
+    </div>
+
+    <div class="journey-card">
+      <span class="kind">自宅からの方位判定</span>
+      <div class="dest-check-row">
+        <div class="field">
+          <label for="destPref">目的地（都道府県）</label>
+          <select id="destPref">
+            <option value="">選択してください</option>
+            <option>北海道</option><option>青森県</option><option>岩手県</option><option>宮城県</option><option>秋田県</option><option>山形県</option><option>福島県</option>
+            <option>茨城県</option><option>栃木県</option><option>群馬県</option><option>埼玉県</option><option>千葉県</option><option>東京都</option><option>神奈川県</option>
+            <option>新潟県</option><option>富山県</option><option>石川県</option><option>福井県</option><option>山梨県</option><option>長野県</option>
+            <option>岐阜県</option><option>静岡県</option><option>愛知県</option><option>三重県</option>
+            <option>滋賀県</option><option>京都府</option><option>大阪府</option><option>兵庫県</option><option>奈良県</option><option>和歌山県</option>
+            <option>鳥取県</option><option>島根県</option><option>岡山県</option><option>広島県</option><option>山口県</option>
+            <option>徳島県</option><option>香川県</option><option>愛媛県</option><option>高知県</option>
+            <option>福岡県</option><option>佐賀県</option><option>長崎県</option><option>熊本県</option><option>大分県</option><option>宮崎県</option><option>鹿児島県</option><option>沖縄県</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="destCity">目的地（市区町村・任意）</label>
+          <input type="text" id="destCity" placeholder="例：横浜市">
+        </div>
+        <div class="field">
+          <label for="travelDate">旅行予定日（任意・空欄なら今日）</label>
+          <input type="date" id="travelDate" min="1900-01-01" max="2035-12-31">
+        </div>
+        <button type="button" id="destCheckBtn">この方角を調べる</button>
+      </div>
+      <p class="journey-text" id="destResultText">現住所（都道府県・市区町村）を入力し、目的地と旅行予定日（任意）を選んで「この方角を調べる」を押すと、実際の方位・距離を計算します。</p>
+      <p class="journey-text" id="destSignificanceText"></p>
+      <p class="small-note">主要な政令指定都市などは市区町村名から個別に座標を判定し、それ以外は都道府県庁所在地の座標で近似します。緯度経度から直接、真北基準の方位角を算出するため、本ツールの「真北＋偏角補正」の方針と自然に一致します（磁北のズレを補正する必要自体がありません）。</p>
+    </div>
+
+    <div class="journey-card" id="compatCard" style="display:none;">
+      <span class="kind">相性診断 &mdash; お相手の結果</span>
+      <div class="cards">
+        <div class="card">
+          <span class="kind">本命星 &mdash; 生年</span>
+          <div class="name-row">
+            <span class="name" id="partnerHonmeiName">&mdash;</span>
+            <span class="badge" id="partnerHonmeiBadge">&mdash;</span>
+          </div>
+          <span class="palace" id="partnerHonmeiPalace">&mdash;</span>
+          <p class="trait" id="partnerHonmeiTrait">&mdash;</p>
+          <p class="detail-text" id="partnerHonmeiDetail">&mdash;</p>
+          <p class="caution-text" id="partnerHonmeiCaution">&mdash;</p>
+        </div>
+        <div class="card">
+          <span class="kind">月命星 &mdash; 生月</span>
+          <div class="name-row">
+            <span class="name" id="partnerGetsumeiName">&mdash;</span>
+            <span class="badge" id="partnerGetsumeiBadge">&mdash;</span>
+          </div>
+          <span class="palace" id="partnerGetsumeiPalace">&mdash;</span>
+          <p class="trait" id="partnerGetsumeiTrait">&mdash;</p>
+          <p class="detail-text" id="partnerGetsumeiDetail">&mdash;</p>
+          <p class="caution-text" id="partnerGetsumeiCaution">&mdash;</p>
+        </div>
+      </div>
+      <p class="compat-line" id="compatHonmeiLine">&mdash;</p>
+      <p class="compat-mechanism" id="compatHonmeiMechanism">&mdash;</p>
+      <p class="compat-line" id="compatGetsumeiLine">&mdash;</p>
+      <p class="compat-mechanism" id="compatGetsumeiMechanism">&mdash;</p>
+      <p class="journey-text" id="compatSummary">&mdash;</p>
+      <p class="advice-text" id="compatAdvice">&mdash;</p>
+      <p class="small-note" id="compatWhyNote">&mdash;</p>
+
+      <div class="partner-board-section" id="partnerBoardSection" style="display:none;">
+        <span class="kind">お相手の今の方位盤</span>
+        <p class="board-caption" id="partnerBoardCaption">&mdash;</p>
+        <svg class="octa-board" id="partnerCurrentBoard" viewBox="0 0 360 360" role="img" aria-label="お相手の今の方位盤"></svg>
+        <div class="octa-legend">
+          <span><i class="swatch good"></i>吉方位</span>
+          <span><i class="swatch caution"></i>凶方位</span>
+        </div>
+        <div class="notes-grid">
+          <div class="note-block">
+            <span class="note-title">お相手の吉方位</span>
+            <p class="note-body" id="partnerKippouText">&mdash;</p>
+          </div>
+          <div class="note-block">
+            <span class="note-title">お相手の注意すべき方位</span>
+            <p class="note-body" id="partnerKyouhouText">&mdash;</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>※ 年の切り替えは立春（2月4日ごろ）、月の切り替えは各月の節入り日（4〜8日ごろ）を基準とする簡易計算です。実際の立春・節入り日時は年によって前後するため、境目の日付（2月3〜5日／各月の4〜8日）に近い生まれの方は誤差が生じる場合があります。</p>
+    <p>※ 日盤（日家九星）は、冬至・夏至と六十干支を用いた近似の天文計算で算出しています。実際の節入り時刻により、境目の日は万年暦と数日ズレる可能性があります。</p>
+    <p>※ 傾斜宮・吉凶方位の判定方法は流派差があります。ここでの吉方位は「本命星との相生・比和」を基準にした一般的な考え方によるもので、正確を期す場合は万年暦や専門家の鑑定を推奨します。</p>
+    <p>※ ここで示す吉凶は「気学」（本命星をもとにした個人別の方位術）の体系です。方位そのもののエネルギーを生年月日によらず万人共通で判断する「奇門遁甲」という別系統の方位術もありますが、使用する九星・符号がそもそも別物（気学の一白水星〜九紫火星に対し、奇門遁甲は天蓬〜天英という別の九星を使用）のため、本ツールでは両者を混同せず気学の体系のみで一貫して計算しています。</p>
+  </footer>
+</div>
+
+<script>
+  const STARS = {
+    1: { name: "一白水星", romaji: "Ikkoku Suisei", element: "水", color: "#2C5F7C", palaceName: "坎宮", dir: "北", trait: "柔軟で忍耐強く、自分のペースを崩さない探求者。",
+      detail: "水のように環境に合わせながら適応する一方、物事をじっくり見極めるため決断には時間がかかりがち。共感力が高く、どんな環境でも芯を保って乗り越えていく強さを持つ。人の話を聴く力に長け、カウンセラーや研究職など、一人でじっくり向き合う仕事に向く。",
+      caution: "感情を溜め込みすぎです。誰にも本音を言えないまま、いつか限界が来ます。恋愛も待っているだけでは何も進みません。",
+      journey: "水のように環境に合わせながら、人知れず苦労を重ねて信頼を築いてきたタイプ。表に出さない我慢強さが、気づけば大きな支えになってきた歩み。",
+      advice: "本音を隠すクセ、そろそろやめませんか。我慢強さは美徳ですが、黙って耐え続ければ心が先に壊れます。信頼できる一人にだけは、弱音を見せる勇気を。",
+      action: "どんな環境にも自然に馴染む適応力がある一方、決断には時間がかかりがち。",
+      work: "カウンセラーや研究職など、一人でじっくり向き合う仕事向き。",
+      money: "堅実な傾向（金銭面の情報は限定的）。",
+      love: "一途で深い愛情を注ぐが、積極的なアプローチは苦手。",
+      stress: "感情を内に秘めがちで、ストレスを溜め込みやすい。" },
+    2: { name: "二黒土星", romaji: "Jikoku Dosei", element: "土", color: "#4A3B2A", palaceName: "坤宮", dir: "南西", trait: "縁の下の力持ち。堅実な努力と奉仕の人。",
+      detail: "畑を耕すように、コツコツと積み重ねる堅実さが持ち味。謙虚で自己アピールは控えめだが、頼りになる存在として周囲を優しく包み込む。教育・介護福祉・農業・不動産など、人を支える仕事や積み上げ型の仕事に向く。",
+      caution: "断れない性格、いいように使われていませんか。尽くしすぎる恋愛は、共依存の入り口です。",
+      journey: "地道な努力と気配りで周囲を支えながら、着実に歩んできた。派手さはなくとも、積み重ねた信頼が晩年の安心につながるタイプ。",
+      advice: "「ノー」と言えない性格、正直かなり損をしています。尽くした分だけ相手が同じだけ返してくれるとは限りません。自分を後回しにする癖、そろそろ手放してください。",
+      action: "コツコツと努力を積み重ねる堅実さで地道に物事を進める。",
+      work: "教育・介護福祉・農業・不動産など、人を支える仕事向き。",
+      money: "畑を耕すように堅実に貯める、地道な蓄財タイプ。",
+      love: "安定した関係を求める家庭的なタイプ。尽くしすぎに注意。",
+      stress: "頼まれると断れず、自分のことを後回しにしがち。" },
+    3: { name: "三碧木星", romaji: "Sanpeki Mokusei", element: "木", color: "#1F6F5C", palaceName: "震宮", dir: "東", trait: "行動力と瞬発力に富む、若さと勢いの星。",
+      detail: "思い立ったらすぐ動く行動力と、子どものような純粋さが魅力。素直で明るく、フットワークの軽さで周囲を元気にする。営業職や起業家など、新しいことへ挑戦し続ける仕事に向く。",
+      caution: "計画性のなさ、いい加減自覚してください。恋も勢いだけでは長続きしません。",
+      journey: "思い立ったら即行動、若さと勢いで道を切り開いてきた。失敗も多いが、その行動力自体が財産になっている歩み。",
+      advice: "熱しやすく冷めやすい——それ、周りにはとっくにバレています。勢いだけで突っ走ると、必ずどこかで足元をすくわれる。一つのことを最後までやり切れるかどうかが、あなたの本当の分かれ道です。",
+      action: "思い立ったらすぐ動ける行動力抜群、チャレンジ精神旺盛。",
+      work: "営業職や起業家向き。",
+      money: "衝動買いしやすい傾向（詳細は要検証）。",
+      love: "一目惚れしやすく情熱的だが、長続きには新鮮さの工夫が必要。",
+      stress: "熱しやすく冷めやすく、飽きっぽい。" },
+    4: { name: "四緑木星", romaji: "Shiroku Mokusei", element: "木", color: "#3D6532", palaceName: "巽宮", dir: "南東", trait: "穏やかで社交的。信用を積み重ねる調整役。",
+      detail: "平和主義で気遣い上手。どんなグループにも自然に溶け込み、人と人、遠方との縁をつなぐ力を持つ。外交官や接客業など、コミュニケーション能力を活かす仕事に向く。",
+      caution: "八方美人が仇となり、誰からも本心を信用されていない可能性があります。恋愛でも自分の気持ちを飲み込みすぎです。",
+      journey: "持ち前の協調性で、人と人・遠方との縁をつなぎながら信頼を築いてきた。「八方美人」と言われつつも、その柔軟さが道を開いてきたタイプ。",
+      advice: "八方美人、そろそろ卒業しましょう。誰にでもいい顔をしていると、いざという時に誰もあなたの本音を知らないままです。多少嫌われる覚悟を持つことも必要ですよ。",
+      action: "協調性が高く、どんなグループにも自然に溶け込める。",
+      work: "外交官や接客業などコミュニケーション系の仕事向き。",
+      money: "堅実だが人付き合いでの出費がかさみやすい（要検証）。",
+      love: "思いやりのある穏やかな恋愛だが、本音を後回しにしがち。",
+      stress: "「八方美人」に見られやすく、自分の意見を押し殺しやすい。" },
+    5: { name: "五黄土星", romaji: "Gōō Dosei", element: "土", color: "#96700F", palaceName: "中宮", dir: "中央", trait: "強い意志とカリスマを持つ、破壊と再生の星。",
+      detail: "義理人情に厚く、自分軸を貫くリーダー気質。逆境に強く、困難な状況ほど力を発揮する、最強の運と大凶の運の両極を併せ持つタイプ。経営者や政治家など、大きな責任を伴う仕事に向く。",
+      caution: "支配的な態度、周囲はとっくに気づいています。独占欲の強さが、大切な人を遠ざけます。",
+      journey: "最強の運と大凶の運、両極端を経験しながら、強い意志で困難を乗り越えてきた波乱万丈な歩み。逆境ほど力を発揮するタイプ。",
+      advice: "強運と我の強さは表裏一体。あなたが周りを振り回している自覚、ありますか。周囲の声に耳を貸さない限り、その強運はいずれ自滅の引き金になります。",
+      action: "逆境に強く、困難な状況ほど力を発揮するリーダータイプ。",
+      work: "経営者や政治家など、大きな責任を伴う仕事向き。",
+      money: "浮き沈みが大きい傾向（詳細は要検証）。",
+      love: "好きになったら一直線で情が深いが、独占欲が強く出ることも。",
+      stress: "こだわりが強く、支配的に見られやすい。" },
+    6: { name: "六白金星", romaji: "Roppaku Kinsei", element: "金", color: "#7A6A3D", palaceName: "乾宮", dir: "北西", trait: "高い理想とプライド。天を目指すリーダー気質。",
+      detail: "「正しいか否か」で判断する強い正義感の持ち主。ルールや秩序を重視し、結果を成果として形にするストイックさが持ち味。法律や金融など、正確さが求められる仕事に向く。",
+      caution: "厳しさが行き過ぎて、孤立していませんか。恋愛でも理想を掲げすぎて、誰とも付き合えなくなる危険があります。",
+      journey: "高い理想と強い正義感を貫き、結果を積み上げてきたストイックな歩み。厳しさゆえに孤独を感じる場面もあったはず。",
+      advice: "完璧主義、もう十分伝わっています。自分にも他人にも厳しすぎて、気づけば周りに人がいなくなっていませんか。弱さを見せることは、負けではありません。",
+      action: "ブレずに進める高い志と強い正義感。",
+      work: "法律や金融など、正確さが求められる仕事向き。",
+      money: "計画的だが浪費は少ない傾向（要検証）。",
+      love: "理想的で妥協しない恋愛観。",
+      stress: "完璧主義な面があり、自分にも他人にも厳しくなりがち。" },
+    7: { name: "七赤金星", romaji: "Shichiseki Kinsei", element: "金", color: "#B23A2E", palaceName: "兌宮", dir: "西", trait: "社交的で楽天的。場を喜びで満たすホスト役。",
+      detail: "「みんなが楽しい＝自分も楽しい」という天性のホスピタリティを持つ。話し上手で人気者になりやすく、計算力と観察眼も備える。飲食業やエンターテインメント関連で才能が開花しやすい。",
+      caution: "見栄の出費と優柔不断、信用を失う一番の原因です。恋愛でも「本気か遊びか」をはっきりさせないと、いずれ痛い目を見ます。",
+      journey: "持ち前の社交性で場を盛り上げ、多くの人に囲まれながら歩んできた。楽しさの裏で、決断を先延ばしにしてきた場面も。",
+      advice: "見栄っ張りで優柔不断——耳が痛いかもしれませんが事実です。楽しい話で場を盛り上げるのは得意でも、肝心なところで決断を先延ばしにする癖を直さないと、いずれ信用を失います。",
+      action: "話し上手で社交性が高く、人気者になりやすい。",
+      work: "飲食業やエンターテインメント関連で才能開花。",
+      money: "見栄を張ってしまい、散財しやすい傾向。",
+      love: "デートを楽しく演出するが、遊びと本気の区別がつきにくい。",
+      stress: "決断力に欠け、優柔不断になりやすい。" },
+    8: { name: "八白土星", romaji: "Hakuhaku Dosei", element: "土", color: "#6E5638", palaceName: "艮宮", dir: "北東", trait: "変化と改革を粘り強く積み上げる山の星。",
+      detail: "一度決めた目標を粘り強く追い続ける強い信念の持ち主。感情表現は控えめだが、信頼を得ると深く寄り添う。不動産や銀行員など、信頼の積み重ねが重要な仕事に向く。",
+      caution: "頑固さで変わるべき時に変われず、機を逃しがちです。恋愛は不器用なぶん、誤解されやすい点にも注意。",
+      journey: "一度決めた目標を粘り強く積み上げ、信頼を勝ち取ってきたタイプ。変化には時間がかかるが、その分崩れにくい基盤を築いている。",
+      advice: "頑固さは長所でもあり、最大の欠点でもあります。変わるべき時に変われないと、せっかく積み上げたものごと崩れかねません。たまには意地を張らずに、流れに身を任せてみてください。",
+      action: "一度決めた目標を粘り強く追い続ける強い信念。",
+      work: "不動産や銀行員など、信頼が重要な仕事向き。",
+      money: "堅実にコツコツ貯めるタイプ（詳細は要検証）。",
+      love: "不器用だが深い愛情。結婚を意識した真剣交際を好む。",
+      stress: "頑固な面があり、変化に時間がかかる。" },
+    9: { name: "九紫火星", romaji: "Kyūshi Kasei", element: "火", color: "#6B3F6E", palaceName: "離宮", dir: "南", trait: "情熱的で華やか。知性と美意識を照らす星。",
+      detail: "直感とセンスに優れ、物事の本質を見抜く先見の明を持つ。ひらめきが速く、「魅せる力」で周囲を惹きつける成功体質。芸術家・デザイナー・学者・美容関連などクリエイティブな仕事で才能が花開きやすい。",
+      caution: "飽きっぽさと感情の起伏、才能への言い訳にしていませんか。恋も冷めるのが早すぎて、周りを振り回しがちです。",
+      journey: "直感とセンスで才能を開花させ、注目を集めながら歩んできた。感情の起伏に振り回されることも多かったはず。",
+      advice: "飽きっぽさと感情の起伏、才能の代償だと割り切っていませんか。それを言い訳にしている限り、本当の実力は発揮されません。一つのことをやり抜いた時、あなたの運気は一段跳ね上がります。",
+      action: "頭の回転が速く、直感力に優れ物事の本質を見抜く。",
+      work: "芸術家やデザイナーなどクリエイティブな仕事向き。",
+      money: "欲しい物を我慢できず思い切った使い方をするため貯金は苦手だが、お金に困ることは少ない。",
+      love: "情熱的な恋をするタイプで、燃え上がるのも冷めるのも早い。",
+      stress: "感情の起伏が大きく、興味が次々と移りやすい。" },
+  };
+
+  // Board rows follow the traditional chart orientation (south at top).
+  const BOARD_LAYOUT = [4, 9, 2, 3, 5, 7, 8, 1, 6];
+
+  // Setsuiri (solar-term) boundary day for each calendar month, per the
+  // simplified reference table used across the project's kigaku notes.
+  const SETSUIRI_DAY = { 1: 6, 2: 4, 3: 6, 4: 5, 5: 6, 6: 6, 7: 7, 8: 8, 9: 8, 10: 8, 11: 7, 12: 7 };
+
+  function digitalRoot(n) {
+    let s = n;
+    while (s > 9) {
+      s = String(s).split("").reduce((a, d) => a + Number(d), 0);
+    }
+    return s;
+  }
+
+  function wrap9(n) {
+    return (((n - 1) % 9) + 9) % 9 + 1;
+  }
+
+  function kigakuYearOf(y, m, d) {
+    return (m < 2 || (m === 2 && d < 4)) ? y - 1 : y;
+  }
+
+  function effMonthOf(month, day) {
+    let eff = month;
+    if (day < SETSUIRI_DAY[month]) {
+      eff = month - 1;
+      if (eff === 0) eff = 12;
+    }
+    return eff;
+  }
+
+  function calcHonmei(year) {
+    const root = digitalRoot(year);
+    let h = 11 - root;
+    if (h <= 0) h += 9;
+    if (h > 9) h -= 9;
+    return h;
+  }
+
+  function calcGetsumei(honmei, month, day) {
+    const effMonth = effMonthOf(month, day);
+    let base;
+    if ([1, 4, 7].includes(honmei)) base = 19;
+    else if ([2, 5, 8].includes(honmei)) base = 13;
+    else base = 16;
+    return wrap9(base - effMonth);
+  }
+
+  function fillCard(prefix, num) {
+    const s = STARS[num];
+    document.getElementById(prefix + "Name").textContent = s.name;
+    const badge = document.getElementById(prefix + "Badge");
+    badge.textContent = s.element + " ・ " + num;
+    badge.style.background = s.color;
+    document.getElementById(prefix + "Palace").textContent = s.palaceName + "（" + s.dir + "）に定位";
+    document.getElementById(prefix + "Trait").textContent = s.trait;
+    document.getElementById(prefix + "Detail").textContent = s.detail;
+    document.getElementById(prefix + "Caution").textContent = s.caution;
+  }
+
+  // 八方塞がり（本命星が中宮に入る年）は9年周期。年盤の中宮の星は年ごとに
+  // 1つずつ減っていく（[[九星気学_本命星と月命星の計算方法]]の式が9を法と
+  // する周期のため）ので、今年の年盤中宮の星から本命星までの巡回差分を
+  // 求めれば、次の八方塞がりまでの年数がそのまま算出できる。
+  function nextFusagariInfo(honmei) {
+    const now = new Date();
+    const kigakuYear = kigakuYearOf(now.getFullYear(), now.getMonth() + 1, now.getDate());
+    const yearCenter = calcHonmei(kigakuYear);
+    const years = ((yearCenter - honmei) % 9 + 9) % 9;
+    const nextYear = kigakuYear + years;
+    const prevYear = nextYear - 9;
+    const prevYearsAgo = kigakuYear - prevYear;
+    return { years, year: nextYear, prevYear, prevYearsAgo };
+  }
+
+  // --- 相性診断（2人の本命星・月命星を五行で比較）------------------
+  // 判定ロジックは [[相性の良い本命星と月命星]] の枠組みをそのまま使用。
+  function elementRelationBucket(a, b) {
+    if (a === b) return "wa"; // 比和（同じ星）
+    const elA = STARS[a].element, elB = STARS[b].element;
+    if (elA === elB) return "wa"; // 比和（同じ五行・別の星）
+    if (produces(elA, elB) || produces(elB, elA)) return "sei"; // 相生
+    return "koku"; // 相剋
+  }
+
+  const RELATION_LABEL = { sei: "相生（調和）", wa: "比和（似た者同士）", koku: "相剋（刺激し合う）" };
+
+  // 五行の相生・相剋がなぜその2星の間で成り立つのか、具体的なメカニズムを
+  // 一文で示す（[[相性の良い本命星と月命星]]の相生ペア表・比和・相剋の定義を使用）。
+  function elementMechanism(aNum, bNum) {
+    const aName = STARS[aNum].name, bName = STARS[bNum].name;
+    const aEl = STARS[aNum].element, bEl = STARS[bNum].element;
+    if (aNum === bNum) return "全く同じ" + aName + "同士。価値観や感性がよく似ています。";
+    if (aEl === bEl) return "同じ" + aEl + "の五行同士（" + aName + "×" + bName + "）。似た気質ですが、星が違う分だけ微妙な違いも感じるはずです。";
+    if (produces(aEl, bEl)) return aEl + "が" + bEl + "を生む相生の関係で、" + aName + "が" + bName + "を後押しします。";
+    if (produces(bEl, aEl)) return bEl + "が" + aEl + "を生む相生の関係で、" + bName + "が" + aName + "を後押しします。";
+    return aEl + "と" + bEl + "は互いに抑え合う相剋の関係。ぶつかり合いながら刺激を与え合う組み合わせです。";
+  }
+
+  const COMPAT_GUIDE = {
+    sei: {
+      sei: { summary: "本命星・月命星ともに相生。表面も内面も調和しやすく、安定した好相性です。",
+        advice: "多少のことでは揺らがない相性です。ただし居心地が良すぎて、互いに甘えが出やすい点には気をつけて。" },
+      wa: { summary: "本命星は相生で調和し、月命星は比和で似た者同士。心地よく付き合える相性です。",
+        advice: "うわべの相性の良さに油断せず、たまには本音をぶつけ合う機会も作ってください。" },
+      koku: { summary: "本命星は相生で表面的には合うのですが、月命星が相剋のため、深く付き合うほど摩擦が出やすい相性。適度な距離感も大切に。",
+        advice: "表面上は仲良く見えても、深い話になると急に噛み合わなくなることがあるはず。無理に分かり合おうとせず、違いを認める方が長続きします。" },
+    },
+    wa: {
+      sei: { summary: "本命星は比和で似た者同士でありながら、月命星は相生。内面では自然と調和が生まれる相性です。",
+        advice: "最初はどこか物足りなく感じるかもしれませんが、付き合いが長くなるほど本当の相性の良さに気づくタイプです。" },
+      wa: { summary: "本命星・月命星ともに比和。似た者同士で共感力は強い反面、似ているからこそ衝突することもある相性です。",
+        advice: "似た者同士だからこそ、お互いの短所も鏡のように映し出してしまいます。相手の欠点にイラつく時は、自分も同じ欠点を持っている証拠です。" },
+      koku: { summary: "本命星は比和で気は合いますが、月命星が相剋のため、内面では刺激し合う場面もありそうです。",
+        advice: "表面は気が合うのに、ふとした瞬間に価値観の違いで衝突しませんか。距離感を大事にすれば、良い相性を保てます。" },
+    },
+    koku: {
+      sei: { summary: "本命星は相剋で最初はなかなか噛み合わなくても、月命星は相生。深く知り合うほど相性が良くなっていくタイプです。",
+        advice: "最初のとっつきにくさで判断しないでください。時間をかけるほど、実は噛み合ってくる相性です。" },
+      wa: { summary: "本命星は相剋で表面はぶつかりやすいものの、月命星は比和。内面では共感できる部分がある相性です。",
+        advice: "表面的にはぶつかりやすいものの、内面では通じ合える部分があります。すぐに結論を出さず、じっくり付き合ってみてください。" },
+      koku: { summary: "本命星・月命星ともに相剋。刺激し合いながら互いを成長させる相性で、ぶつかることもありますがそれが学びになります。",
+        advice: "正直、ぶつかることの多い相性です。それでもお互いを本気で成長させ合える関係でもあるので、逃げずに向き合う価値はあります。" },
+    },
+  };
+
+  function fillCompat(honmei, getsumei, partnerHonmei, partnerGetsumei) {
+    const card = document.getElementById("compatCard");
+    fillCard("partnerHonmei", partnerHonmei);
+    fillCard("partnerGetsumei", partnerGetsumei);
+
+    const honmeiBucket = elementRelationBucket(honmei, partnerHonmei);
+    const getsumeiBucket = elementRelationBucket(getsumei, partnerGetsumei);
+
+    document.getElementById("compatHonmeiLine").innerHTML =
+      "本命星同士（" + STARS[honmei].name + " × " + STARS[partnerHonmei].name + "）：<span class=\"rel\">" + RELATION_LABEL[honmeiBucket] + "</span>";
+    document.getElementById("compatHonmeiMechanism").textContent = elementMechanism(honmei, partnerHonmei);
+    document.getElementById("compatGetsumeiLine").innerHTML =
+      "月命星同士（" + STARS[getsumei].name + " × " + STARS[partnerGetsumei].name + "）：<span class=\"rel\">" + RELATION_LABEL[getsumeiBucket] + "</span>";
+    document.getElementById("compatGetsumeiMechanism").textContent = elementMechanism(getsumei, partnerGetsumei);
+
+    const guide = COMPAT_GUIDE[honmeiBucket][getsumeiBucket];
+    document.getElementById("compatSummary").textContent = guide.summary;
+    document.getElementById("compatAdvice").textContent = guide.advice;
+    document.getElementById("compatWhyNote").textContent =
+      "本命星は「一生変わらない表向きの性格」、月命星は「日常や親しい関係での本音」を表すとされ、九星気学ではこの2つを重ねて立体的に読むのが伝統的な方法です。判定の土台にあるのは、五行（木・火・土・金・水）が「相生（一方が他方を生み育てる）」「比和（同じ五行）」「相剋（互いに抑え合う）」のどれに当たるかという、中国古来の陰陽五行説です。ただし、これは統計的に検証された理論ではなく、伝統的な象徴体系に基づく考え方である点にご留意ください。";
+
+    card.style.display = "";
+  }
+
+  // 本命星＝月命星のとき、月命星を中宮に置く通常の傾斜宮の求め方が
+  // 成立しなくなる（本命星も中宮に重なってしまうため）。そのため、
+  // 星ごとに固定された「中宮傾斜」の対応表を使う。錯卦（八卦の陰陽反転）の
+  // ペアと一致することを確認済み（[[中宮の特殊ルール検証（一白×一白=九紫の理由）]]参照）。
+  const CHUGU_KEISHA = {
+    1: { star: 9, palace: "離宮" },
+    2: { star: 6, palace: "乾宮" },
+    3: { star: 4, palace: "巽宮" },
+    4: { star: 3, palace: "震宮" },
+    6: { star: 2, palace: "坤宮" },
+    7: { star: 8, palace: "艮宮" },
+    8: { star: 7, palace: "兌宮" },
+    9: { star: 1, palace: "坎宮" },
+  };
+
+  function updateSameStarNote(honmei, getsumei) {
+    const note = document.getElementById("sameStarNote");
+    if (honmei !== getsumei) {
+      note.style.display = "none";
+      return;
+    }
+    note.style.display = "";
+    const textEl = document.getElementById("sameStarText");
+    if (honmei === 5) {
+      textEl.innerHTML =
+        "本命星と月命星が両方とも五黄土星になりました。通常、月命星は「月命星を盤の中宮に置いたとき、本命星がどの宮に入るか」で決まりますが、本命星と月命星が同じ場合はどちらも中宮に重なってしまい、8方位のどこにも当てはまらなくなります（これを「中宮傾斜」と呼びます）。" +
+        "五黄土星はもともと中宮を定位置とする星のため、この中宮傾斜だけは例外的に性別で扱いが分かれ、男性は兌宮傾斜（七赤金星）、女性は乾宮傾斜（六白金星）を補って読むのが一般的です。";
+      return;
+    }
+    const k = CHUGU_KEISHA[honmei];
+    textEl.innerHTML =
+      "本命星と月命星が同じ" + STARS[honmei].name + "になりました。通常、月命星は「月命星を盤の中宮に置いたとき、本命星がどの宮に入るか」で決まりますが、本命星と月命星が同じ場合はどちらも中宮に重なってしまい、8方位のどこにも当てはまらなくなります（これを「中宮傾斜」と呼びます）。" +
+      "そのため、本命星ごとに定められた対応表を使って補い、" + STARS[honmei].name + "の場合は<span class=\"strong\">" + k.palace + "傾斜（" + STARS[k.star].name + "）</span>の性質を併せ持つと読みます。" +
+      "この対応表は八卦の陰陽をすべて反転させた「錯卦」のペア（坎⇔離、坤⇔乾、震⇔巽、艮⇔兌）と一致しており、偶然ではなく易学の構造に基づくものです。";
+  }
+
+  const TENDENCY_FIELDS = [
+    ["行動", "action"],
+    ["仕事", "work"],
+    ["お金", "money"],
+    ["恋愛", "love"],
+    ["ストレス時", "stress"],
+  ];
+
+  function fillJourney(honmei) {
+    const s = STARS[honmei];
+    document.getElementById("journeyText").textContent = s.journey;
+    document.getElementById("adviceText").textContent = s.advice;
+
+    const listEl = document.getElementById("tendencyList");
+    listEl.innerHTML = TENDENCY_FIELDS.map(([label, key]) =>
+      "<dt>" + label + "</dt><dd>" + s[key] + "</dd>"
+    ).join("");
+
+    const fs = nextFusagariInfo(honmei);
+    const fusagariEl = document.getElementById("fusagariText");
+    if (fs.years === 0) {
+      fusagariEl.innerHTML = '今年（' + fs.year + '年）が<span class="strong">「八方塞がり」</span>の年に当たります。新しいことより、今あるものを整える時期と心得て。' +
+        '前回は9年前（' + fs.prevYear + '年）、次回は9年後（' + (fs.year + 9) + '年）です。';
+    } else {
+      fusagariEl.innerHTML = '年回りが良くない「八方塞がり」の年は、<span class="strong">あと' + fs.years + '年後（' + fs.year + '年）</span>に巡ってきます。' +
+        '前回は' + fs.prevYearsAgo + '年前（' + fs.prevYear + '年）でした。';
+    }
+  }
+
+  // 短期旅行（向こう12ヶ月の月盤）と引っ越し（年盤）の目安。
+  // 月盤は[[吉方位の効果_距離と滞在期間]]の目安と同じ考え方（1泊〜2泊3日程度の
+  // 近中距離旅行に対応する盤）を、年盤は引っ越し判断にそのまま使う。
+  function fillTravelAdvice(honmei) {
+    const now = new Date();
+    const y0 = now.getFullYear(), m0 = now.getMonth() + 1;
+
+    const tripMonths = [];
+    for (let i = 0; i < 12; i++) {
+      const idx = m0 - 1 + i;
+      const targetYear = y0 + Math.floor(idx / 12);
+      const targetMonth = (idx % 12) + 1;
+      const day = 20; // 各月の節入り日（最大8日）を確実に過ぎている安全日
+      const kigakuYear = kigakuYearOf(targetYear, targetMonth, day);
+      const yearCenter = calcHonmei(kigakuYear);
+      const monthCenter = calcGetsumei(yearCenter, targetMonth, day);
+      const branchIndex = effMonthOf(targetMonth, day) % 12;
+      const analysis = analyzeBoard(monthCenter, branchIndex, honmei);
+      if (!analysis.houiFusagari && analysis.goodIdxs.length > 0) {
+        tripMonths.push({ year: targetYear, month: targetMonth, dirs: analysis.goodIdxs.map(label) });
+      }
+    }
+
+    const tbody = document.getElementById("travelTableBody");
+    const tripNoteEl = document.getElementById("travelTripNote");
+    if (tripMonths.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="2">該当なし</td></tr>';
+      tripNoteEl.textContent = "今後12ヶ月では、月盤上で明確な吉方位が見当たりませんでした。";
+    } else {
+      tbody.innerHTML = tripMonths.map((t) =>
+        "<tr><td>" + t.year + "年" + t.month + "月</td><td>" + t.dirs.join("・") + "</td></tr>"
+      ).join("");
+      tripNoteEl.textContent = "凶殺と重ならず、本命星と相生・比和の関係にある方位のみを月ごとに挙げています。";
+    }
+
+    const kigakuYearNow = kigakuYearOf(y0, m0, now.getDate());
+
+    // 今年から10年先まで、年ごとの年盤を計算してプルダウンで選べるようにする。
+    moveYearsData = [];
+    for (let i = 0; i <= 10; i++) {
+      const year = kigakuYearNow + i;
+      const analysis = analyzeBoard(calcHonmei(year), branchIndexOfYear(year), honmei);
+      moveYearsData.push({ year, offset: i, analysis });
+    }
+
+    const selectEl = document.getElementById("moveYearSelect");
+    selectEl.innerHTML = moveYearsData.map((d) =>
+      '<option value="' + d.offset + '">' + d.year + "年" + (d.offset === 0 ? "（今年）" : "（" + d.offset + "年後）") +
+      (d.analysis.houiFusagari ? "・八方塞がり" : "") + "</option>"
+    ).join("");
+    selectEl.value = "0";
+    renderMoveYear(0);
+  }
+
+  let moveYearsData = [];
+
+  function renderMoveYear(offset) {
+    const d = moveYearsData[offset];
+    if (!d) return;
+    const moveEl = document.getElementById("travelMoveText");
+    const analysis = d.analysis;
+    let goodDirs = [];
+    if (analysis.houiFusagari) {
+      goodDirs = [];
+      moveEl.innerHTML = d.year + "年は<span class=\"strong\">八方塞がり</span>の年に当たります。転居は避け、翌年以降を検討するのがおすすめです。";
+    } else if (analysis.goodIdxs.length > 0) {
+      goodDirs = analysis.goodIdxs.map((i) => PALACES[i].dir);
+      moveEl.textContent = d.year + "年なら " + analysis.goodIdxs.map(label).join("・") + " が吉方位です。";
+    } else {
+      moveEl.textContent = d.year + "年の年盤では、凶殺と重ならない明確な吉方位は見当たりません。";
+    }
+    renderDirectionCompass("moveCompass", new Set(goodDirs));
+  }
+
+  document.getElementById("moveYearSelect").addEventListener("change", (e) => {
+    renderMoveYear(Number(e.target.value));
+  });
+
+  // 現住所（都道府県・市区町村）。今はフォームで受け取って保持するのみ。
+  // 将来、住所から実際の方位角（真北＋偏角補正、[[方位の測り方_真北と磁北]]の
+  // 方針を参照）を計算する機能を追加する際に使用する。
+  let userPref = "";
+  let userCity = "";
+
+  document.getElementById("form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const val = document.getElementById("bdate").value;
+    const errorEl = document.getElementById("error");
+    if (!val) {
+      errorEl.classList.add("show");
+      return;
+    }
+    errorEl.classList.remove("show");
+
+    const [y, m, d] = val.split("-").map(Number);
+    const kigakuYear = kigakuYearOf(y, m, d);
+
+    const honmei = calcHonmei(kigakuYear);
+    const getsumei = calcGetsumei(honmei, m, d);
+
+    fillCard("honmei", honmei);
+    fillCard("getsumei", getsumei);
+    updateSameStarNote(honmei, getsumei);
+    fillJourney(honmei);
+    fillTravelAdvice(honmei);
+
+    const partnerVal = document.getElementById("partnerBdate").value;
+    if (partnerVal) {
+      const [py, pm, pd] = partnerVal.split("-").map(Number);
+      const partnerKigakuYear = kigakuYearOf(py, pm, pd);
+      const partnerHonmei = calcHonmei(partnerKigakuYear);
+      const partnerGetsumei = calcGetsumei(partnerHonmei, pm, pd);
+      fillCompat(honmei, getsumei, partnerHonmei, partnerGetsumei);
+      userPartnerHonmei = partnerHonmei;
+    } else {
+      document.getElementById("compatCard").style.display = "none";
+      userPartnerHonmei = null;
+    }
+
+    userPref = document.getElementById("pref").value;
+    userCity = document.getElementById("city").value.trim();
+
+    const results = document.getElementById("results");
+    results.classList.remove("show");
+    void results.offsetWidth;
+    results.classList.add("show");
+
+    userHonmei = honmei;
+    renderCurrentBoard();
+  });
+
+  // ---------------------------------------------------------------------
+  // 今の方位盤（年盤・月盤・日盤）
+  // ---------------------------------------------------------------------
+
+  const PALACES = BOARD_LAYOUT.map((num) => ({ base: num, ...STARS[num] }));
+  // Palace opposite a given index: the 3x3 grid is point-symmetric around
+  // the centre, so the opposite of index i is simply 8 - i.
+  const oppositeIndex = (i) => 8 - i;
+  const paletteIndexByName = (name) => PALACES.findIndex((p) => p.palaceName === name);
+
+  // 十二支 → 方位（角の宮は2支ずつ受け持つ）
+  const BRANCHES = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
+  const BRANCH_PALACE_NAME = ["坎宮", "艮宮", "艮宮", "震宮", "巽宮", "巽宮", "離宮", "坤宮", "坤宮", "兌宮", "乾宮", "乾宮"];
+
+  function branchIndexOfYear(kigakuYear) {
+    return ((kigakuYear - 4) % 12 + 12) % 12;
+  }
+
+  // --- 日家九星（近似計算）--------------------------------------------
+  // 冬至に最も近い甲子（陽遁・一白起点）、夏至に最も近い甲子（陰遁・九紫起点）
+  // を軸に、そこからの経過日数で九星を巡らせる。冬至・夏至の日付は太陽黄経の
+  // 簡易式（Meeus の低精度式）で概算する。境目付近では実際の節入り時刻との
+  // 数日のズレが生じ得る（フッターの注記を参照）。
+  function toJDN(y, m, d) {
+    const a = Math.floor((14 - m) / 12);
+    const yy = y + 4800 - a;
+    const mm = m + 12 * a - 3;
+    return d + Math.floor((153 * mm + 2) / 5) + 365 * yy + Math.floor(yy / 4) - Math.floor(yy / 100) + Math.floor(yy / 400) - 32045;
+  }
+
+  function ganshiIndex(jdn) {
+    // 0 = 甲子。2026-08-28（JDN 2461281）＝甲戌（10）で検証済みのオフセット。
+    return ((jdn + 49) % 60 + 60) % 60;
+  }
+
+  function solarLongitudeDeg(jdn) {
+    const n = jdn - 2451545.0;
+    const L = 280.46 + 0.9856474 * n;
+    const gDeg = 357.528 + 0.9856003 * n;
+    const g = (gDeg * Math.PI) / 180;
+    let lam = L + 1.915 * Math.sin(g) + 0.02 * Math.sin(2 * g);
+    lam = ((lam % 360) + 360) % 360;
+    return lam;
+  }
+
+  function findSolsticeJDN(year, month, day, targetDeg) {
+    let jdn = toJDN(year, month, day) - 12;
+    let prev = solarLongitudeDeg(jdn);
+    for (let i = 1; i <= 24; i++) {
+      const cur = solarLongitudeDeg(jdn + i);
+      if (prev < targetDeg && cur >= targetDeg) {
+        return Math.abs(cur - targetDeg) < Math.abs(targetDeg - prev) ? jdn + i : jdn + i - 1;
+      }
+      prev = cur;
+    }
+    return toJDN(year, month, day);
+  }
+
+  function nearestAnchor(solsticeJDN, isWinter) {
+    const k = ganshiIndex(solsticeJDN);
+    if (k >= 0 && k <= 28) {
+      return { jdn: solsticeJDN - k, startStar: isWinter ? 1 : 9 };
+    }
+    if (k >= 32 && k <= 59) {
+      return { jdn: solsticeJDN + (60 - k), startStar: isWinter ? 1 : 9 };
+    }
+    // k は 29〜31 → 甲午（30）が最寄り。この場合は起点の星が入れ替わる特例。
+    return { jdn: solsticeJDN + (30 - k), startStar: isWinter ? 7 : 3 };
+  }
+
+  function calcDayStar(y, m, d) {
+    const jdn = toJDN(y, m, d);
+    const winterThis = findSolsticeJDN(y, 12, 21, 270);
+    const summerThis = findSolsticeJDN(y, 6, 21, 90);
+    let anchor;
+    let ascending; // 陽遁=true（冬至〜夏至）, 陰遁=false（夏至〜冬至）
+    if (jdn >= winterThis) {
+      // 今年の冬至以降（年末）→ 陽遁、今年の冬至を起点
+      anchor = nearestAnchor(winterThis, true);
+      ascending = true;
+    } else if (jdn >= summerThis) {
+      // 今年の夏至〜冬至前 → 陰遁、今年の夏至を起点
+      anchor = nearestAnchor(summerThis, false);
+      ascending = false;
+    } else {
+      // 年始〜今年の夏至前 → 陽遁、前年の冬至を起点
+      const winterPrev = findSolsticeJDN(y - 1, 12, 21, 270);
+      anchor = nearestAnchor(winterPrev, true);
+      ascending = true;
+    }
+    const diff = jdn - anchor.jdn;
+    return ascending ? wrap9(anchor.startStar + diff) : wrap9(anchor.startStar - diff);
+  }
+
+  // --- 盤の生成と吉凶判定 -------------------------------------------
+  const ELEMENT_ORDER = ["木", "火", "土", "金", "水"];
+  function produces(a, b) {
+    return ELEMENT_ORDER.indexOf(b) === (ELEMENT_ORDER.indexOf(a) + 1) % 5;
+  }
+  function relation(personEl, palaceEl, sameStar) {
+    if (sameStar) return "neutral";
+    if (personEl === palaceEl) return "good";
+    if (produces(personEl, palaceEl) || produces(palaceEl, personEl)) return "good";
+    return "caution";
+  }
+
+  function buildValues(center) {
+    return PALACES.map((p) => wrap9(p.base + center - 5));
+  }
+
+  function analyzeBoard(center, branchIndex, honmei) {
+    const values = buildValues(center);
+    const goouIdx = values.findIndex((v) => v === 5);
+    const hasGoou = goouIdx !== -1 && goouIdx !== 4;
+    const ankenIdx = hasGoou ? oppositeIndex(goouIdx) : -1;
+
+    const branchPalaceIdx = paletteIndexByName(BRANCH_PALACE_NAME[branchIndex]);
+    const haIdx = oppositeIndex(branchPalaceIdx);
+
+    let honmeisatsuIdx = -1;
+    let honmeitekisatsuIdx = -1;
+    let houiFusagari = false;
+    let fusagariAnkenIdx = -1;
+    if (honmei) {
+      const idx = values.findIndex((v) => v === honmei);
+      if (idx === 4) {
+        houiFusagari = true;
+        if (honmei !== 5) {
+          fusagariAnkenIdx = PALACES.findIndex((p) => p.base === honmei);
+        }
+      } else {
+        honmeisatsuIdx = idx;
+        honmeitekisatsuIdx = oppositeIndex(idx);
+      }
+    }
+
+    const cautionIdxSet = new Set([ankenIdx, haIdx, honmeisatsuIdx, honmeitekisatsuIdx, fusagariAnkenIdx].filter((i) => i >= 0));
+    if (hasGoou) cautionIdxSet.add(goouIdx);
+
+    const goodIdxs = [];
+    const caution2Idxs = []; // 相剋（五行の相性のみによる注意）
+    if (honmei) {
+      const personEl = STARS[honmei].element;
+      values.forEach((v, i) => {
+        if (i === 4) return;
+        const rel = relation(personEl, STARS[v].element, v === honmei);
+        if (cautionIdxSet.has(i)) return;
+        if (rel === "good") goodIdxs.push(i);
+        else if (rel === "caution") caution2Idxs.push(i);
+      });
+    }
+
+    return { values, goouIdx: hasGoou ? goouIdx : -1, ankenIdx, haIdx, honmeisatsuIdx, honmeitekisatsuIdx, houiFusagari, fusagariAnkenIdx, goodIdxs, caution2Idxs };
+  }
+
+  function label(idx) {
+    const p = PALACES[idx];
+    return p.palaceName + "（" + p.dir + "）";
+  }
+
+  function isCautionIdx(a, idx) {
+    return idx === a.goouIdx || idx === a.ankenIdx || idx === a.haIdx ||
+      idx === a.honmeisatsuIdx || idx === a.honmeitekisatsuIdx || idx === a.fusagariAnkenIdx ||
+      a.caution2Idxs.includes(idx);
+  }
+
+  // --- 八角形の方位盤（SVG） ------------------------------------------
+  // 辺が東西南北・四隅の8方位を向くように、頂点を22.5度ずらして配置する。
+  const DIRECTION_ORDER = ["北", "北東", "東", "南東", "南", "南西", "西", "北西"];
+  const OCTA_CX = 180, OCTA_CY = 180, OCTA_R = 165, OCTA_HUB_R = 54;
+
+  function octaPoint(angleDeg, radius) {
+    const rad = (angleDeg * Math.PI) / 180;
+    return { x: OCTA_CX + radius * Math.sin(rad), y: OCTA_CY - radius * Math.cos(rad) };
+  }
+
+  function renderOctaBoard(analysis, center, svgId) {
+    const svg = document.getElementById(svgId || "currentBoard");
+    let html = "";
+
+    for (let k = 0; k < 8; k++) {
+      const dir = DIRECTION_ORDER[k];
+      const idx = PALACES.findIndex((p) => p.dir === dir);
+      const v = analysis.values[idx];
+      const s = STARS[v];
+      const p = PALACES[idx];
+
+      const bearing = k * 45;
+      const vA = octaPoint(bearing - 22.5, OCTA_R);
+      const vB = octaPoint(bearing + 22.5, OCTA_R);
+
+      let cls = "wedge";
+      let onFill = false;
+      if (isCautionIdx(analysis, idx)) { cls += " caution"; onFill = true; }
+      else if (analysis.goodIdxs.includes(idx)) { cls += " good"; onFill = true; }
+
+      html += '<polygon class="' + cls + '" points="' +
+        OCTA_CX + "," + OCTA_CY + " " + vA.x + "," + vA.y + " " + vB.x + "," + vB.y + '"></polygon>';
+
+      const textPt = octaPoint(bearing, OCTA_R * 0.62);
+      const starCls = onFill ? "" : " s" + v;
+      html += '<g class="wedge-text' + (onFill ? " on-fill" : "") + '">' +
+        '<text class="dir-label" x="' + textPt.x + '" y="' + (textPt.y - 22) + '">' + dir + '</text>' +
+        '<text class="star-label' + starCls + '" x="' + textPt.x + '" y="' + (textPt.y + 2) + '">' + s.name.slice(0, 2) + '</text>' +
+        '<text class="palace-label" x="' + textPt.x + '" y="' + (textPt.y + 20) + '">' + p.palaceName + '</text>' +
+        '</g>';
+    }
+
+    // 中宮（八角形の中心のハブ）
+    const centerStar = STARS[center];
+    html += '<circle class="hub" cx="' + OCTA_CX + '" cy="' + OCTA_CY + '" r="' + OCTA_HUB_R + '"></circle>';
+    html += '<g class="wedge-text"><text class="star-label s' + center + '" x="' + OCTA_CX + '" y="' + (OCTA_CY - 2) + '">' + centerStar.name.slice(0, 2) + '</text>' +
+      '<text class="palace-label" x="' + OCTA_CX + '" y="' + (OCTA_CY + 16) + '">中宮</text></g>';
+
+    svg.innerHTML = html;
+  }
+
+  // 簡易コンパス（8方位のみ・星情報なし）。旅行・引っ越しのおすすめ方位を
+  // ひと目で示すための軽量版。八角形盤（renderOctaBoard）と同じ幾何ロジック。
+  function renderDirectionCompass(svgId, goodDirSet) {
+    const svg = document.getElementById(svgId);
+    const cx = 100, cy = 100, r = 88, hubR = 26;
+    function pt(angleDeg, radius) {
+      const rad = (angleDeg * Math.PI) / 180;
+      return { x: cx + radius * Math.sin(rad), y: cy - radius * Math.cos(rad) };
+    }
+    let html = "";
+    DIRECTION_ORDER.forEach((dir, k) => {
+      const bearing = k * 45;
+      const vA = pt(bearing - 22.5, r);
+      const vB = pt(bearing + 22.5, r);
+      const isGood = goodDirSet.has(dir);
+      html += '<polygon class="mini-wedge' + (isGood ? " good" : "") + '" points="' +
+        cx + "," + cy + " " + vA.x + "," + vA.y + " " + vB.x + "," + vB.y + '"></polygon>';
+      const tp = pt(bearing, r * 0.62);
+      html += '<text class="mini-label' + (isGood ? " on-fill" : "") + '" x="' + tp.x + '" y="' + (tp.y + 4) + '">' + dir + '</text>';
+    });
+    html += '<circle class="mini-hub" cx="' + cx + '" cy="' + cy + '" r="' + hubR + '"></circle>';
+    svg.innerHTML = html;
+  }
+
+  let userHonmei = null;
+  let userPartnerHonmei = null;
+  let activeBoard = "year";
+
+  // --- 自宅からの方位判定（都道府県庁所在地の座標による簡易ジオコーディング）---
+  // 経緯度から直接、球面三角法で真北基準の方位角を求めるため、磁北の偏角補正は
+  // 不要（[[方位の測り方_真北と磁北]]で決めた「真北採用」の方針と自然に一致する）。
+  const PREF_COORDS = {
+    "北海道": [43.0642, 141.3469], "青森県": [40.8244, 140.7400], "岩手県": [39.7036, 141.1527],
+    "宮城県": [38.2682, 140.8694], "秋田県": [39.7186, 140.1024], "山形県": [38.2404, 140.3633],
+    "福島県": [37.7500, 140.4678], "茨城県": [36.3418, 140.4468], "栃木県": [36.5658, 139.8836],
+    "群馬県": [36.3906, 139.0608], "埼玉県": [35.8617, 139.6455], "千葉県": [35.6047, 140.1233],
+    "東京都": [35.6895, 139.6917], "神奈川県": [35.4478, 139.6425], "新潟県": [37.9026, 139.0232],
+    "富山県": [36.6953, 137.2113], "石川県": [36.5613, 136.6562], "福井県": [36.0652, 136.2216],
+    "山梨県": [35.6642, 138.5686], "長野県": [36.6513, 138.1810], "岐阜県": [35.3912, 136.7223],
+    "静岡県": [34.9769, 138.3831], "愛知県": [35.1802, 136.9066], "三重県": [34.7303, 136.5086],
+    "滋賀県": [35.0045, 135.8686], "京都府": [35.0116, 135.7681], "大阪府": [34.6937, 135.5023],
+    "兵庫県": [34.6913, 135.1830], "奈良県": [34.6851, 135.8048], "和歌山県": [34.2261, 135.1675],
+    "鳥取県": [35.5036, 134.2383], "島根県": [35.4723, 133.0505], "岡山県": [34.6617, 133.9350],
+    "広島県": [34.3963, 132.4596], "山口県": [34.1859, 131.4714], "徳島県": [34.0658, 134.5593],
+    "香川県": [34.3401, 134.0434], "愛媛県": [33.8416, 132.7657], "高知県": [33.5597, 133.5311],
+    "福岡県": [33.6064, 130.4181], "佐賀県": [33.2494, 130.2988], "長崎県": [32.7448, 129.8737],
+    "熊本県": [32.7898, 130.7417], "大分県": [33.2382, 131.6126], "宮崎県": [31.9111, 131.4239],
+    "鹿児島県": [31.5602, 130.5581], "沖縄県": [26.2124, 127.6809],
+  };
+
+  // 政令指定都市など主要な市区町村（都道府県庁所在地と異なる代表例のみ）。
+  // 入力された市区町村名にこれらの語が含まれていれば、都道府県庁所在地より
+  // 精度の高い座標として優先的に使う。
+  const CITY_COORDS = {
+    "横浜市": [35.4437, 139.6380], "川崎市": [35.5308, 139.7029], "相模原市": [35.5714, 139.3739],
+    "横須賀市": [35.2813, 139.6722], "川口市": [35.8078, 139.7241], "八王子市": [35.6658, 139.3164],
+    "町田市": [35.5460, 139.4380], "堺市": [34.5732, 135.4830], "北九州市": [33.8834, 130.8752],
+    "浜松市": [34.7108, 137.7261], "旭川市": [43.7706, 142.3649], "函館市": [41.7687, 140.7291],
+    "姫路市": [34.8154, 134.6857], "尼崎市": [34.7332, 135.4059], "西宮市": [34.7376, 135.3416],
+    "東大阪市": [34.6794, 135.6008], "郡山市": [37.4004, 140.3592], "いわき市": [37.0503, 140.8875],
+    "豊田市": [35.0827, 137.1560], "倉敷市": [34.5850, 133.7722], "福山市": [34.4858, 133.3625],
+    "下関市": [33.9578, 130.9414], "久留米市": [33.3196, 130.5083],
+  };
+
+  function resolveCoords(prefName, cityText) {
+    const text = (cityText || "").trim();
+    let cityKey = null;
+    if (text) {
+      for (const key in CITY_COORDS) {
+        if (text.includes(key)) { cityKey = key; break; }
+      }
+    }
+    return {
+      coords: cityKey ? CITY_COORDS[cityKey] : PREF_COORDS[prefName],
+      label: text || prefName,
+      precise: !!cityKey,
+    };
+  }
+
+  function toRad(deg) { return (deg * Math.PI) / 180; }
+  function toDeg(rad) { return (rad * 180) / Math.PI; }
+
+  function haversineKm(lat1, lng1, lat2, lng2) {
+    const R = 6371;
+    const dLat = toRad(lat2 - lat1), dLng = toRad(lng2 - lng1);
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  function bearingDeg(lat1, lng1, lat2, lng2) {
+    const phi1 = toRad(lat1), phi2 = toRad(lat2), dLng = toRad(lng2 - lng1);
+    const y = Math.sin(dLng) * Math.cos(phi2);
+    const x = Math.cos(phi1) * Math.sin(phi2) - Math.sin(phi1) * Math.cos(phi2) * Math.cos(dLng);
+    return (toDeg(Math.atan2(y, x)) + 360) % 360;
+  }
+
+  function bearingToDirIndex(bearing) {
+    return Math.round(bearing / 45) % 8;
+  }
+
+  const BOARD_LABEL = { year: "年盤", month: "月盤", day: "日盤" };
+
+  document.getElementById("destCheckBtn").addEventListener("click", () => {
+    const homePref = document.getElementById("pref").value;
+    const homeCityText = document.getElementById("city").value;
+    const destPref = document.getElementById("destPref").value;
+    const destCityText = document.getElementById("destCity").value;
+    const travelDateVal = document.getElementById("travelDate").value;
+    const resultEl = document.getElementById("destResultText");
+    const sigEl = document.getElementById("destSignificanceText");
+    sigEl.textContent = "";
+
+    if (!userHonmei) {
+      resultEl.textContent = "先に生年月日を入力して「調べる」を押してください。";
+      return;
+    }
+    if (!homePref) {
+      resultEl.textContent = "まずフォームの「現住所（都道府県）」を選んでください。";
+      return;
+    }
+    if (!destPref) {
+      resultEl.textContent = "目的地の都道府県を選んでください。";
+      return;
+    }
+    if (homePref === destPref && !destCityText.trim()) {
+      resultEl.textContent = "現住所と同じ都道府県です。市区町村まで入力するか、別の都道府県を選んでください。";
+      return;
+    }
+
+    const home = resolveCoords(homePref, homeCityText);
+    const dest = resolveCoords(destPref, destCityText);
+    const dist = haversineKm(home.coords[0], home.coords[1], dest.coords[0], dest.coords[1]);
+    const bearing = bearingDeg(home.coords[0], home.coords[1], dest.coords[0], dest.coords[1]);
+    const dirName = DIRECTION_ORDER[bearingToDirIndex(bearing)];
+
+    // 距離に応じて見るべき盤（日盤／月盤／年盤）を自動選択し、指定日
+    // （未入力なら今日）のその盤で吉凶を判定する。
+    let boardType, dateLabel;
+    if (dist < 200) { boardType = "day"; }
+    else if (dist < 500) { boardType = "month"; }
+    else { boardType = "year"; }
+
+    let travelDate;
+    if (travelDateVal) {
+      const [ty, tm, td] = travelDateVal.split("-").map(Number);
+      travelDate = new Date(ty, tm - 1, td);
+      dateLabel = ty + "年" + tm + "月" + td + "日";
+    } else {
+      travelDate = new Date();
+      dateLabel = "今日";
+    }
+
+    const period = computePeriodFor(travelDate, boardType);
+    const analysis = analyzeBoard(period.center, period.branchIndex, userHonmei);
+    const idx = PALACES.findIndex((p) => p.dir === dirName);
+
+    const isCaution = isCautionIdx(analysis, idx);
+    const isGood = analysis.goodIdxs.includes(idx);
+    const judgement = isCaution ? "凶方位（注意が必要な方角）" : (isGood ? "吉方位（本命星と相生・比和の関係）" : "吉凶どちらとも言えない方位");
+    const precisionNote = (home.precise || dest.precise) ? "" : "（都道府県庁所在地の座標による概算）";
+
+    resultEl.innerHTML =
+      "自宅（" + home.label + "）から見た" + dest.label + "は<strong class=\"strong\">" + dirName + "方向</strong>、直線距離で約<strong class=\"strong\">" + Math.round(dist) + "km</strong>です" + precisionNote + "。" +
+      dateLabel + "（" + period.caption + "）の" + BOARD_LABEL[boardType] + "で見ると、この方角は<strong class=\"strong\">" + judgement + "</strong>です。";
+
+    // 距離・滞在日数による重要度の注釈（[[吉方位の効果_距離と滞在期間]]の目安を反映）
+    let sig;
+    if (dist < 200) {
+      sig = "この距離は日帰り〜近距離の目安です。2泊までの短い旅行なら、方位はそれほど気にしなくてよいとされています。";
+    } else if (dist < 500) {
+      sig = "1泊〜2泊3日程度の旅行に相当する距離です。" +
+        (isGood ? "このくらいの旅行に向いている方角と言えます。" :
+          isCaution ? "この規模の旅行では方位の影響が出やすいとされるため、注意した方が良い方角です。" :
+            "旅行の際は一応意識しておきたい距離です。");
+    } else {
+      sig = "3泊以上の長期旅行や引っ越しに相当する距離です。" +
+        (isGood ? "長期旅行や引っ越しに向いている方角と言えます。" :
+          isCaution ? "長期旅行や引っ越し先としては避けたい方角です。" :
+            "長期の計画では、事前にしっかり吉凶を確認しておきたい距離です。");
+    }
+    sigEl.textContent = sig;
+  });
+
+  function computePeriodFor(dateObj, boardType) {
+    const y = dateObj.getFullYear(), m = dateObj.getMonth() + 1, d = dateObj.getDate();
+    const kigakuYear = kigakuYearOf(y, m, d);
+    const yearCenter = calcHonmei(kigakuYear);
+    const effMonth = effMonthOf(m, d);
+    const monthCenter = calcGetsumei(yearCenter, m, d);
+    const dayCenter = calcDayStar(y, m, d);
+
+    if (boardType === "year") {
+      return {
+        center: yearCenter,
+        branchIndex: branchIndexOfYear(kigakuYear),
+        caption: kigakuYear + "年（" + STARS[yearCenter].name + " 中宮）",
+        haName: "歳破",
+      };
+    } else if (boardType === "month") {
+      return {
+        center: monthCenter,
+        branchIndex: effMonth % 12,
+        caption: kigakuYear + "年 " + m + "月（" + STARS[monthCenter].name + " 中宮）",
+        haName: "月破",
+      };
+    }
+    return {
+      center: dayCenter,
+      branchIndex: ganshiIndex(toJDN(y, m, d)) % 12,
+      caption: y + "年" + m + "月" + d + "日（" + STARS[dayCenter].name + " 中宮）",
+      haName: "日破",
+    };
+  }
+
+  function computePeriod() {
+    return computePeriodFor(new Date(), activeBoard);
+  }
+
+  // 1人分の「今の方位盤」（八角形盤＋吉方位／注意点テキスト）を指定した
+  // DOM要素に描画する。本人用・お相手用のどちらにも使う共通ロジック。
+  function renderPersonBoard(honmeiVal, period, ids) {
+    document.getElementById(ids.caption).textContent = period.caption;
+
+    const analysis = analyzeBoard(period.center, period.branchIndex, honmeiVal);
+    renderOctaBoard(analysis, period.center, ids.svg);
+
+    const kippouEl = document.getElementById(ids.kippou);
+    if (!honmeiVal) {
+      kippouEl.textContent = "生年月日を入力すると、本命星から見た吉方位をここに表示します。";
+    } else if (analysis.houiFusagari) {
+      kippouEl.textContent = "この盤では本命星が中宮に入っています（八方塞がり）。特定の吉方位は取れない年（月・日）とされます。";
+    } else if (analysis.goodIdxs.length === 0) {
+      kippouEl.textContent = "この盤では、凶殺と重ならない明確な吉方位は見当たりません。";
+    } else {
+      kippouEl.innerHTML = "本命星（" + STARS[honmeiVal].name + "）と相生・比和の関係にある方位：<br>" +
+        analysis.goodIdxs.map((i) => '<span class="tag good">' + label(i) + "＝" + STARS[analysis.values[i]].name + '</span>').join(" ");
+    }
+
+    const kyouhouEl = document.getElementById(ids.kyouhou);
+    const cautionLines = [];
+    if (analysis.goouIdx >= 0) cautionLines.push("五黄殺＝" + label(analysis.goouIdx));
+    if (analysis.ankenIdx >= 0) cautionLines.push("暗剣殺＝" + label(analysis.ankenIdx));
+    cautionLines.push(period.haName + "＝" + label(analysis.haIdx));
+    if (analysis.houiFusagari) {
+      cautionLines.push("本命星が中宮＝八方塞がり");
+      if (analysis.fusagariAnkenIdx >= 0) cautionLines.push("定位置の暗剣殺＝" + label(analysis.fusagariAnkenIdx));
+    } else {
+      if (analysis.honmeisatsuIdx >= 0) cautionLines.push("本命殺＝" + label(analysis.honmeisatsuIdx));
+      if (analysis.honmeitekisatsuIdx >= 0) cautionLines.push("本命的殺＝" + label(analysis.honmeitekisatsuIdx));
+    }
+    if (analysis.caution2Idxs.length > 0) {
+      cautionLines.push("相性面で避けたい方位＝" + analysis.caution2Idxs.map(label).join("・"));
+    }
+    kyouhouEl.innerHTML = cautionLines.map((line) => '<span class="tag caution">' + line + '</span>').join(" ");
+  }
+
+  function renderCurrentBoard() {
+    const period = computePeriod();
+    renderPersonBoard(userHonmei, period, {
+      caption: "boardCaption", svg: "currentBoard", kippou: "kippouText", kyouhou: "kyouhouText",
+    });
+
+    const partnerSection = document.getElementById("partnerBoardSection");
+    if (userPartnerHonmei) {
+      partnerSection.style.display = "";
+      renderPersonBoard(userPartnerHonmei, period, {
+        caption: "partnerBoardCaption", svg: "partnerCurrentBoard", kippou: "partnerKippouText", kyouhou: "partnerKyouhouText",
+      });
+    } else {
+      partnerSection.style.display = "none";
+    }
+  }
+
+  document.getElementById("boardTabs").addEventListener("click", (e) => {
+    const btn = e.target.closest(".tab-btn");
+    if (!btn) return;
+    document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+    activeBoard = btn.dataset.board;
+    renderCurrentBoard();
+  });
+
+  renderCurrentBoard();
+</script>
